@@ -7,8 +7,14 @@ from pkg.plugin.events import *  # 导入事件类
 
 # 读取配置文件
 config_path = os.path.join('data', 'config', 'provider.json')
-with open(config_path, 'r', encoding='gbk') as config_file:
-    config = json.load(config_file)
+try:
+    # 首先尝试使用UTF-8编码读取
+    with open(config_path, 'r', encoding='utf-8') as config_file:
+        config = json.load(config_file)
+except UnicodeDecodeError:
+    # 如果UTF-8失败，尝试使用GBK编码读取
+    with open(config_path, 'r', encoding='gbk') as config_file:
+        config = json.load(config_file)
 
 # 从配置文件中获取dify地址并去除 "/v1" 部分
 url = config["dify-service-api"]["base-url"].rstrip("/v1")
